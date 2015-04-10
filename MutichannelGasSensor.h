@@ -35,8 +35,8 @@ private:
 
 public:
 
-    uint16_t res0[3] = {0, 0, 0};//sensors res0
-    uint16_t res[3] = {0, 0, 0};//sensors res
+    uint16_t res0[3];//sensors res0
+    uint16_t res[3];//sensors res
     
     void begin(int address);
     int16_t readR0(void);

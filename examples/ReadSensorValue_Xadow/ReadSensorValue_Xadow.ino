@@ -2,13 +2,13 @@
     This is a demo to test MutichannelGasSensor library
     This code is running on Xadow-mainboard, and the I2C slave is Xadow-MutichannelGasSensor
     There is a ATmega168PA on Xadow-MutichannelGasSensor, it get sensors output and feed back to master.
-    the data is raw ADC value, algorithm should be realized on master.
+    the data is raw resistance value, algorithm should be realized on master.
     
     please feel free to write email to me if there is any question 
     
     Jacky Zhang, Embedded Software Engineer
-    qi.zhang@seeed.cc
-    17,mar,2015
+    email: qi.zhang@seeed.cc
+    10, Apr, 2015
 */
 
 #include "xadow.h"

@@ -62,7 +62,7 @@ int16_t MutichannelGasSensor::readData(uint8_t cmd)
     //wait for a while
     delay(2);
     //get response
-    Wire.requestFrom(i2cAddress, 4);    // request 4 bytes from slave device
+    Wire.requestFrom(i2cAddress, (uint8_t)4);    // request 4 bytes from slave device
     while(Wire.available() == 0)
     {
         if(timeout++ > 500)
