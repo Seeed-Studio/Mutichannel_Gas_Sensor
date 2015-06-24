@@ -50,95 +50,45 @@ void MutichannelGasSensor::sendI2C(unsigned char dta)
 ** Function name:           readData
 ** Descriptions:            read 4 bytes from I2C slave
 *********************************************************************************************************/
-int16_t MutichannelGasSensor::readData(uint8_t cmd)
+float MutichannelGasSensor::readData(uint8_t cmd)
 {
     uint16_t timeout = 0;
-    uint8_t buffer[4];
+    uint8_t buffer[6];
     uint8_t checksum = 0;
-    int16_t rtnData = 0;
+    float rtnData = 0;
 
     //send command
     sendI2C(cmd);
     //wait for a while
     delay(2);
     //get response
-    Wire.requestFrom(i2cAddress, (uint8_t)4);    // request 4 bytes from slave device
+    Wire.requestFrom(i2cAddress, (uint8_t)6);    // request 6 bytes from slave device
     while(Wire.available() == 0)
     {
-        if(timeout++ > 500)
+        if(timeout++ > 20)
             return -2;//time out
-        delay(2);
+        delay(5);
     }
-    if(Wire.available() != 4)
+    if(Wire.available() != 6)
         return -3;//rtnData length wrong
     buffer[0] = Wire.read();
     buffer[1] = Wire.read();
     buffer[2] = Wire.read();
     buffer[3] = Wire.read();
-    checksum = (uint8_t)(buffer[0] + buffer[1] + buffer[2]);
-    if(checksum != buffer[3])
+    buffer[4] = Wire.read();
+    buffer[5] = Wire.read();
+    checksum = (uint8_t)(buffer[0] + buffer[1] + buffer[2] + buffer[3] + buffer[4]);
+    
+    if(checksum != buffer[5])
         return -4;//checksum wrong
-    rtnData = ((buffer[1] << 8) + buffer[2]);
+    
+    if(cmd != buffer[0])
+        return -5;//cmd wrong
+    
+    //all are right
+    rtnData = *(float *)(&buffer[1]);
     
     return rtnData;//successful
-}
-
-/*********************************************************************************************************
-** Function name:           readR0
-** Descriptions:            read R0 stored in slave MCU
-*********************************************************************************************************/
-int16_t MutichannelGasSensor::readR0(void)
-{
-    int16_t rtnData = 0;
-
-    rtnData = readData(0x11);
-    if(rtnData >= 0)
-        res0[0] = rtnData;
-    else
-        return -1;//unsuccessful
-
-    rtnData = readData(0x12);
-    if(rtnData >= 0)
-        res0[1] = rtnData;
-    else
-        return -1;//unsuccessful
-
-    rtnData = readData(0x13);
-    if(rtnData >= 0)
-        res0[2] = rtnData;
-    else
-        return -1;//unsuccessful
-
-    return 0;//successful
-}
-
-/*********************************************************************************************************
-** Function name:           readR
-** Descriptions:            read resistance value of every channel from slave MCU
-*********************************************************************************************************/
-int16_t MutichannelGasSensor::readR(void)
-{
-    int16_t rtnData = 0;
-
-    rtnData = readData(0x01);
-    if(rtnData >= 0)
-        res[0] = rtnData;
-    else
-        return -1;//unsuccessful
-
-    rtnData = readData(0x02);
-    if(rtnData >= 0)
-        res[1] = rtnData;
-    else
-        return -1;//unsuccessful
-
-    rtnData = readData(0x03);
-    if(rtnData >= 0)
-        res[2] = rtnData;
-    else
-        return -1;//unsuccessful
-
-    return 0;//successful
 }
 
 /*********************************************************************************************************

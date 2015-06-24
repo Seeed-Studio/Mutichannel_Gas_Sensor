@@ -15,6 +15,7 @@
 #include <Wire.h>
 #include "MutichannelGasSensor.h"
 
+float nh3 = 0, co = 0, no2 = 0;
 void setup()
 {
     Serial.begin(9600);  // start serial for output
@@ -22,31 +23,30 @@ void setup()
 
     mutichannelGasSensor.begin(0x04);//the default I2C address of the slave is 0x04
     //mutichannelGasSensor.changeI2cAddr(0x10);
-    //mutichannelGasSensor.doCalibrate();
-    //delay(8000);
-    while(mutichannelGasSensor.readR0() < 0)
-    {
-        Serial.println("sensors init error!!");
-        delay(1000);
-    }
-    Serial.print("Res0[0]: ");
-    Serial.println(mutichannelGasSensor.res0[0]);
-    Serial.print("Res0[1]: ");
-    Serial.println(mutichannelGasSensor.res0[1]);
-    Serial.print("Res0[2]: ");
-    Serial.println(mutichannelGasSensor.res0[2]);
+    Serial.println("calibrate");
+    mutichannelGasSensor.doCalibrate();
+    delay(35000);
+    Serial.println("done!");
     mutichannelGasSensor.powerOn();
 }
 
 void loop()
 {
-    mutichannelGasSensor.readR();
-    Serial.print("Res[0]: ");
-    Serial.println(mutichannelGasSensor.res[0]);
-    Serial.print("Res[1]: ");
-    Serial.println(mutichannelGasSensor.res[1]);
-    Serial.print("Res[2]: ");
-    Serial.println(mutichannelGasSensor.res[2]);
+    nh3 = mutichannelGasSensor.readData(0x01);
+    delay(10);
+    co = mutichannelGasSensor.readData(0x02);
+    delay(10);
+    no2 = mutichannelGasSensor.readData(0x03);
+    delay(10);
+    Serial.print("nh3: ");
+    Serial.print(nh3);
+    Serial.println("ppm");
+    Serial.print("co: ");
+    Serial.print(co);
+    Serial.println("ppm");
+    Serial.print("no2: ");
+    Serial.print(no2);
+    Serial.println("ppm");
     
     delay(1000);
     Serial.println("...");

@@ -31,16 +31,11 @@ private:
     uint8_t i2cAddress;//I2C address of this MCU
     
     void sendI2C(unsigned char dta);
-    int16_t readData(uint8_t cmd);
 
 public:
-
-    uint16_t res0[3];//sensors res0
-    uint16_t res[3];//sensors res
     
     void begin(int address);
-    int16_t readR0(void);
-    int16_t readR(void);
+    float readData(uint8_t cmd);
     void changeI2cAddr(uint8_t newAddr);
     void doCalibrate(void);
     void powerOn(void);
