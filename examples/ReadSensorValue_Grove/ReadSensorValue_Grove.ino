@@ -23,10 +23,10 @@ void setup()
 
     mutichannelGasSensor.begin(0x04);//the default I2C address of the slave is 0x04
     //mutichannelGasSensor.changeI2cAddr(0x10);
-    Serial.println("calibrate");
-    mutichannelGasSensor.doCalibrate();
-    delay(35000);
-    Serial.println("done!");
+    //Serial.println("calibrate");
+    //mutichannelGasSensor.doCalibrate();
+    //delay(35000);
+    //Serial.println("done!");
     mutichannelGasSensor.powerOn();
 }
 
