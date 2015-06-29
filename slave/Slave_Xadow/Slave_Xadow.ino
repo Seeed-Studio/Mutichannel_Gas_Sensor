@@ -1,3 +1,14 @@
+/*
+    This firmware is for Xadow-MutichannelGasSensor
+    There is a ATmega168PA on Xadow-MutichannelGasSensor, it get sensors output and feed back to master.
+    the data is raw resistance value, algorithm should be realized on master.
+    
+    please feel free to write email to me if there is any question 
+    
+    Jacky Zhang, Embedded Software Engineer
+    email: qi.zhang@seeed.cc
+    10, Apr, 2015
+*/
 
 #include <Wire.h>
 #include <EEPROM.h>
@@ -21,6 +32,7 @@
 #define NO2_PIN A2
 #define HEAT_PIN 8
 #define LED_PIN 9
+#define ADCSENS_PIN A3
 
 //functions declaration
 void Calibration(void);
@@ -44,7 +56,8 @@ uint16_t res0[3] = {0, 0, 0};
 uint16_t res[3];
 //calibrate flag
 uint8_t doCali = 0;
-
+//gas density
+float density_no2 = 0, density_co = 0, density_nh3 = 0;
 
 
 void setup()
@@ -96,6 +109,7 @@ void Calibration(void)
     digitalWrite(HEAT_PIN, LOW);//heat the sensors, start to work
     digitalWrite(LED_PIN, LOW);//light on
     //get R value
+    delay(30000);
     for(int i = 0; i < 500; i++)
     {
         getSensorsValue();
@@ -145,6 +159,7 @@ void getSensorsValue()
     adcInput[0] = analogRead(NH3_PIN);
     adcInput[1] = analogRead(CO_PIN);
     adcInput[2] = analogRead(NO2_PIN);
+    
     //filter the data
     adcInputFilter[0][ptr] = adcInput[0];
     adcInputFilter[1][ptr] = adcInput[1];
@@ -159,6 +174,20 @@ void getSensorsValue()
         adcValue[i] = sum / 20;
         res[i] = 56 * adcValue[i] / (1024 - adcValue[i]);
     }
+    
+    float ratio0 = (float)res[0] / res0[0];
+    if(ratio0 < 0.04) ratio0 = 0.04;
+    if(ratio0 > 0.8) ratio0 = 0.8;
+    float ratio1 = (float)res[1] / res0[1];
+    if(ratio1 < 0.01) ratio1 = 0.01;
+    if(ratio1 > 3) ratio1 = 3;
+    float ratio2 = (float)res[2] / res0[2];
+    if(ratio2 < 0.07) ratio2 = 0.07;
+    if(ratio2 > 40) ratio2 = 40;
+
+    density_nh3 = 1 / (ratio0 * ratio0 * pow(10, 0.4));
+    density_co = pow(10, 0.6) / pow(ratio1, 1.2);
+    density_no2 = ratio2 / pow(10, 0.8);
 }
 
 void receiveCallback(int dataCount)
@@ -207,48 +236,32 @@ void requestCallback()
     
     switch(recvCmd)
     {
-        case 0x01://read sensor1 R value
+        case 0x01://read NH3 value
             buffer[0] = 0x01;
-            buffer[1] = (uint8_t)(res[0] >> 8);
-            buffer[2] = (uint8_t)res[0];
-            buffer[3] = (uint8_t)(buffer[0] + buffer[1] + buffer[2]);
-            Wire.write(buffer, 4);
+            buffer[1] = *((uint8_t *)(&density_nh3));
+            buffer[2] = *((uint8_t *)(&density_nh3) + 1);
+            buffer[3] = *((uint8_t *)(&density_nh3) + 2);
+            buffer[4] = *((uint8_t *)(&density_nh3) + 3);
+            buffer[5] = (uint8_t)(buffer[0] + buffer[1] + buffer[2] + buffer[3] + buffer[4]);
+            Wire.write(buffer, 6);
             break;
-        case 0x02://read sensor2 R value
+        case 0x02://read CO value
             buffer[0] = 0x02;
-            buffer[1] = (uint8_t)(res[1] >> 8);
-            buffer[2] = (uint8_t)res[1];
-            buffer[3] = (uint8_t)(buffer[0] + buffer[1] + buffer[2]);
-            Wire.write(buffer, 4);
+            buffer[1] = *((uint8_t *)(&density_co));
+            buffer[2] = *((uint8_t *)(&density_co) + 1);
+            buffer[3] = *((uint8_t *)(&density_co) + 2);
+            buffer[4] = *((uint8_t *)(&density_co) + 3);
+            buffer[5] = (uint8_t)(buffer[0] + buffer[1] + buffer[2] + buffer[3] + buffer[4]);
+            Wire.write(buffer, 6);
             break;
-        case 0x03://read sensor3 R value
+        case 0x03://read NO2 value
             buffer[0] = 0x03;
-            buffer[1] = (uint8_t)(res[2] >> 8);
-            buffer[2] = (uint8_t)res[2];
-            buffer[3] = (uint8_t)(buffer[0] + buffer[1] + buffer[2]);
-            Wire.write(buffer, 4);
-            break;
-            
-        case 0x11://read sensor1 R0 value
-            buffer[0] = 0x11;
-            buffer[1] = (uint8_t)(res0[0] >> 8);
-            buffer[2] = (uint8_t)res0[0];
-            buffer[3] = (uint8_t)(buffer[0] + buffer[1] + buffer[2]);
-            Wire.write(buffer, 4);
-            break;
-        case 0x12://read sensor2 R0 value
-            buffer[0] = 0x12;
-            buffer[1] = (uint8_t)(res0[1] >> 8);
-            buffer[2] = (uint8_t)res0[1];
-            buffer[3] = (uint8_t)(buffer[0] + buffer[1] + buffer[2]);
-            Wire.write(buffer, 4);
-            break;
-        case 0x13://read sensor3 R0 value
-            buffer[0] = 0x13;
-            buffer[1] = (uint8_t)(res0[2] >> 8);
-            buffer[2] = (uint8_t)res0[2];
-            buffer[3] = (uint8_t)(buffer[0] + buffer[1] + buffer[2]);
-            Wire.write(buffer, 4);
+            buffer[1] = *((uint8_t *)(&density_no2));
+            buffer[2] = *((uint8_t *)(&density_no2) + 1);
+            buffer[3] = *((uint8_t *)(&density_no2) + 2);
+            buffer[4] = *((uint8_t *)(&density_no2) + 3);
+            buffer[5] = (uint8_t)(buffer[0] + buffer[1] + buffer[2] + buffer[3] + buffer[4]);
+            Wire.write(buffer, 6);
             break;
         default:
             break;

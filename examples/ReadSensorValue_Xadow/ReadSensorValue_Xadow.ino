@@ -50,6 +50,17 @@ void loop()
     Serial.print("Res[2]: ");
     Serial.println(mutichannelGasSensor.res[2]);
     
+    mutichannelGasSensor.calcGas();
+    Serial.print("NH3: ");
+    Serial.print(mutichannelGasSensor.density_nh3);
+    Serial.println("ppm");
+    Serial.print("CO: ");
+    Serial.print(mutichannelGasSensor.density_co);
+    Serial.println("ppm");
+    Serial.print("NO2: ");
+    Serial.print(mutichannelGasSensor.density_no2);
+    Serial.println("ppm");
+    
     Xadow.greenLed(LEDON);
     delay(500);
     Xadow.greenLed(LEDOFF);

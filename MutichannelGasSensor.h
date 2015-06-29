@@ -35,12 +35,15 @@ private:
 
 public:
 
-    uint16_t res0[3] = {0, 0, 0};//sensors res0
-    uint16_t res[3] = {0, 0, 0};//sensors res
+    uint16_t res0[3];//sensors res0
+    uint16_t res[3];//sensors res
+    //gas concentration
+    float density_nh3, density_co, density_no2;
     
     void begin(int address);
     int16_t readR0(void);
     int16_t readR(void);
+    void calcGas(void);
     void changeI2cAddr(uint8_t newAddr);
     void doCalibrate(void);
     void powerOn(void);

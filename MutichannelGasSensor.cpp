@@ -62,7 +62,7 @@ int16_t MutichannelGasSensor::readData(uint8_t cmd)
     //wait for a while
     delay(2);
     //get response
-    Wire.requestFrom(i2cAddress, 4);    // request 4 bytes from slave device
+    Wire.requestFrom(i2cAddress, (uint8_t)4);    // request 4 bytes from slave device
     while(Wire.available() == 0)
     {
         if(timeout++ > 500)
@@ -114,7 +114,7 @@ int16_t MutichannelGasSensor::readR0(void)
 
 /*********************************************************************************************************
 ** Function name:           readR
-** Descriptions:            read resistance value of every channel from slave MCU
+** Descriptions:            read resistance value of each channel from slave MCU
 *********************************************************************************************************/
 int16_t MutichannelGasSensor::readR(void)
 {
@@ -139,6 +139,28 @@ int16_t MutichannelGasSensor::readR(void)
         return -1;//unsuccessful
 
     return 0;//successful
+}
+
+/*********************************************************************************************************
+** Function name:           readR
+** Descriptions:            calculate gas concentration of each channel from slave MCU
+*********************************************************************************************************/
+void MutichannelGasSensor::calcGas(void)
+{
+    
+    float ratio0 = (float)res[0] / res0[0];
+    if(ratio0 < 0.04) ratio0 = 0.04;
+    if(ratio0 > 0.8) ratio0 = 0.8;
+    float ratio1 = (float)res[1] / res0[1];
+    if(ratio1 < 0.01) ratio1 = 0.01;
+    if(ratio1 > 3) ratio1 = 3;
+    float ratio2 = (float)res[2] / res0[2];
+    if(ratio2 < 0.07) ratio2 = 0.07;
+    if(ratio2 > 40) ratio2 = 40;
+    
+    density_nh3 = 1 / (ratio0 * ratio0 * pow(10, 0.4));
+    density_co = pow(10, 0.6) / pow(ratio1, 1.2);
+    density_no2 = ratio2 / pow(10, 0.8);
 }
 
 /*********************************************************************************************************
