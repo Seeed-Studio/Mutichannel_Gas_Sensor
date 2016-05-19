@@ -38,7 +38,7 @@ enum{CO, NO2, NH3, C3H8, C4H10, CH4, H2, C2H5OH};
 
 class MutichannelGasSensor{
 
-private:
+public:
 
     uint8_t i2cAddress;//I2C address of this MCU
     uint16_t res0[3];//sensors res0
@@ -50,6 +50,8 @@ private:
     int16_t readR0(void);
     int16_t readR(void);
     float calcGas(int gas);
+    
+    
 
 public:
 

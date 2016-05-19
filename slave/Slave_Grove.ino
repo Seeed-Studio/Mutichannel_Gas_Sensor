@@ -73,9 +73,9 @@ void setup()
     }
 
     //I2C set up
-    Wire.begin(i2cAddr);          // join i2c bus with address
-    Wire.onReceive(receiveCallback);    // register receive callback
-    Wire.onRequest(requestCallback);       // register request callback
+    Wire.begin(i2cAddr);                    // join i2c bus with address
+    Wire.onReceive(receiveCallback);        // register receive callback
+    Wire.onRequest(requestCallback);        // register request callback
 }
 
 void loop()

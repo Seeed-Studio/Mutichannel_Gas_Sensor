@@ -44,7 +44,7 @@ void MutichannelGasSensor::begin(int address)
     Wire.begin();
     i2cAddress = address;
     is_connected = 0;
-    if (readR0() >= 0) is_connected = 1;
+    if (readR0() > 0) is_connected = 1;
 }
 
 void MutichannelGasSensor::begin()
@@ -109,24 +109,25 @@ int16_t MutichannelGasSensor::readR0(void)
     int16_t rtnData = 0;
 
     rtnData = readData(0x11);
-    if(rtnData >= 0)
+   
+    if(rtnData > 0)
         res0[0] = rtnData;
     else
         return rtnData;//unsuccessful
 
     rtnData = readData(0x12);
-    if(rtnData >= 0)
+    if(rtnData > 0)
         res0[1] = rtnData;
     else
         return rtnData;//unsuccessful
 
     rtnData = readData(0x13);
-    if(rtnData >= 0)
+    if(rtnData > 0)
         res0[2] = rtnData;
     else
         return rtnData;//unsuccessful
 
-    return 0;//successful
+    return 1;//successful
 }
 
 /*********************************************************************************************************
@@ -170,7 +171,7 @@ float MutichannelGasSensor::calcGas(int gas)
 {
     if(!is_connected)
     {
-        if(readR0() >= 0) is_connected = 1;
+        if(readR0() > 0) is_connected = 1;
         else return -1.0f;
     }
 
@@ -187,60 +188,60 @@ float MutichannelGasSensor::calcGas(int gas)
     {
         case CO:
         {
-            if(ratio1 < 0.01) ratio1 = 0.01;
-            if(ratio1 > 3) ratio1 = 3;
+            //if(ratio1 < 0.01) ratio1 = 0.01;
+            //if(ratio1 > 3) ratio1 = 3;
             //c = pow(10, 0.6) / pow(ratio1, 1.2);
             c = pow(ratio1, -1.179)*4.385;  //mod by jack
             break;
         }
         case NO2:
         {
-            if(ratio2 < 0.07) ratio2 = 0.07;
-            if(ratio2 > 40) ratio2 = 40;
+            //if(ratio2 < 0.07) ratio2 = 0.07;
+            //if(ratio2 > 40) ratio2 = 40;
             //c = ratio2 / pow(10, 0.8);
             c = pow(ratio2, 1.007)/6.855;  //mod by jack
             break;
         }
         case NH3:
         {
-            if(ratio0 < 0.04) ratio0 = 0.04;
-            if(ratio0 > 0.8) ratio0 = 0.8;
+            //if(ratio0 < 0.04) ratio0 = 0.04;
+            //if(ratio0 > 0.8) ratio0 = 0.8;
             //c = 1 / (ratio0 * ratio0 * pow(10, 0.4));
             c = pow(ratio0, -1.67)/1.47;  //modi by jack
             break;
         }
         case C3H8:  //add by jack
         {
-            if(ratio0 < 0.23) ratio0 = 0.23;
-            if(ratio0 > 0.8) ratio0 = 0.8;
+            //if(ratio0 < 0.23) ratio0 = 0.23;
+            //if(ratio0 > 0.8) ratio0 = 0.8;
             c = pow(ratio0, -2.518)*570.164;
             break;
         }
         case C4H10:  //add by jack
         {
-            if(ratio0 < 0.15) ratio0 = 0.15;
-            if(ratio0 > 0.65) ratio0 = 0.65;
+            //if(ratio0 < 0.15) ratio0 = 0.15;
+            //if(ratio0 > 0.65) ratio0 = 0.65;
             c = pow(ratio0, -2.138)*398.107;
             break;
         }
         case CH4:  //add by jack
         {
-            if(ratio1 < 0.5) ratio1 = 0.5;
-            if(ratio1 > 0.7) ratio1 = 0.7;
+            //if(ratio1 < 0.5) ratio1 = 0.5;
+            //if(ratio1 > 0.7) ratio1 = 0.7;
             c = pow(ratio1, -4.363)*630.957;
             break;
         }
         case H2:  //add by jack
         {
-            if(ratio1 < 0.04) ratio1 = 0.04;
-            if(ratio1 > 0.8) ratio1 = 0.8;
+            //if(ratio1 < 0.04) ratio1 = 0.04;
+            //if(ratio1 > 0.8) ratio1 = 0.8;
             c = pow(ratio1, -1.8)*0.73;
             break;
         }
         case C2H5OH:  //add by jack
         {
-            if(ratio1 < 0.04) ratio1 = 0.04;
-            if(ratio1 > 1.1) ratio1 = 1.1;
+            //if(ratio1 < 0.04) ratio1 = 0.04;
+            //if(ratio1 > 1.1) ratio1 = 1.1;
             c = pow(ratio1, -1.552)*1.622;
             break;
         }
@@ -271,10 +272,33 @@ void MutichannelGasSensor::changeI2cAddr(uint8_t newAddr)
 *********************************************************************************************************/
 void MutichannelGasSensor::doCalibrate(void)
 {
+START:
+
     sendI2C(0x22);
-    delay(8000);
-    if(readR0() >= 0) is_connected = 1;
-    else is_connected = 0;
+    // delay(8000);
+    if(readR0() > 0)
+    {
+        is_connected = 1;
+        
+        for(int i=0; i<3; i++)
+        {
+            Serial.print(res0[i]);
+            Serial.print('\t');
+        }
+    }
+    else
+    {
+        is_connected = 0;
+        delay(5000);
+        Serial.println("continue...");
+        for(int i=0; i<3; i++)
+        {
+            Serial.print(res0[i]);
+            Serial.print('\t');
+        }
+        Serial.println();
+        goto START;
+    }
 }
 
 /*********************************************************************************************************
