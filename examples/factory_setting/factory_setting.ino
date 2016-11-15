@@ -12,16 +12,9 @@ void setup()
     Serial.begin(115200);
     Serial.println("Please input something to continue");
     while(!Serial.available());
-    
 
-    
     gas.begin(SENSOR_ADDR);     // 
     
-    gas.change_i2c_address(0x19);
-    Serial.println("set address to 0x19");
-    
-    
-    gas.factory_setting();
     Serial.println("FACTORY SETTING OK");
     
     float R0_NH3, R0_CO, R0_NO2;

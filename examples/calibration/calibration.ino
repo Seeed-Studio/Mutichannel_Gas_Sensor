@@ -3,7 +3,7 @@
 // This code is writen by Loovee@2016-5-18
 
 #include <Wire.h>
-#include "MutichannelGasSensora.h"
+#include "MutichannelGasSensor.h"
 
 #define SENSOR_ADDR     0X04        // default to 0x04
 #define PRE_HEAT_TIME   0           // pre-heat time, 10-30 minutes is recommended

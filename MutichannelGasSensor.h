@@ -76,6 +76,9 @@ private:
     unsigned char dta_test[20];
     
     unsigned int readChAdcValue(int ch);
+    unsigned int adcValueR0_NH3_Buf;
+    unsigned int adcValueR0_CO_Buf;
+    unsigned int adcValueR0_NO2_Buf;
     
 public:
 

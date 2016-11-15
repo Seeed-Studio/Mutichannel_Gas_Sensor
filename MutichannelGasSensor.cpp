@@ -81,6 +81,7 @@ void MutichannelGasSensor::sendI2C(unsigned char dta)
 
 unsigned int MutichannelGasSensor::get_addr_dta(unsigned char addr_reg)
 {
+START:
     Wire.beginTransmission(i2cAddress);
     Wire.write(addr_reg);
     Wire.endTransmission();    // stop transmitting
@@ -97,17 +98,62 @@ unsigned int MutichannelGasSensor::get_addr_dta(unsigned char addr_reg)
         raw[cnt++] = Wire.read();
     }
     
-    if(cnt == 0)return 0;
+    if(cnt == 0)goto START;
 
     dta = raw[0];
     dta <<= 8;
     dta += raw[1];
     
+    switch(addr_reg)
+    {
+        case CH_VALUE_NH3:
+        
+        if(dta > 0)
+        {
+            adcValueR0_NH3_Buf = dta;
+        }
+        else 
+        {
+            dta = adcValueR0_NH3_Buf;
+        }
+        
+        break;
+        
+        case CH_VALUE_CO:
+        
+        if(dta > 0)
+        {
+            adcValueR0_CO_Buf = dta;
+        }
+        else 
+        {
+            dta = adcValueR0_CO_Buf;
+        }
+        
+        break;
+        
+        case CH_VALUE_NO2:
+        
+        if(dta > 0)
+        {
+            adcValueR0_NO2_Buf = dta;
+        }
+        else 
+        {
+            dta = adcValueR0_NO2_Buf;
+        }
+        
+        break;
+        
+        default:;
+    }
     return dta;
 }
 
 unsigned int MutichannelGasSensor::get_addr_dta(unsigned char addr_reg, unsigned char __dta)
 {
+    
+START: 
     Wire.beginTransmission(i2cAddress);
     Wire.write(addr_reg);
     Wire.write(__dta);
@@ -125,7 +171,7 @@ unsigned int MutichannelGasSensor::get_addr_dta(unsigned char addr_reg, unsigned
         raw[cnt++] = Wire.read();
     }
     
-    if(cnt == 0)return 0;
+    if(cnt == 0)goto START;
 
     dta = raw[0];
     dta <<= 8;
@@ -196,19 +242,19 @@ int16_t MutichannelGasSensor::readR0(void)
     if(rtnData > 0)
         res0[0] = rtnData;
     else
-        return rtnData;//unsuccessful
+        return rtnData;         //unsuccessful
 
     rtnData = readData(0x12);
     if(rtnData > 0)
         res0[1] = rtnData;
     else
-        return rtnData;//unsuccessful
+        return rtnData;         //unsuccessful
 
     rtnData = readData(0x13);
     if(rtnData > 0)
         res0[2] = rtnData;
     else
-        return rtnData;//unsuccessful
+        return rtnData;         //unsuccessful
 
     return 1;//successful
 }
@@ -536,7 +582,7 @@ float MutichannelGasSensor::getRs(unsigned char ch)         // 0:CH3, 1:CO, 2:NO
     int a = 0;
     switch(ch)
     {
-        case 0:         // CH3
+        case 0:         // NH3
         a = get_addr_dta(1);
         break;
         

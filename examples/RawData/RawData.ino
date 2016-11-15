@@ -11,8 +11,6 @@ void setup()
 {
     Serial.begin(115200);
     gas.begin(SENSOR_ADDR);     // 
-    
-    gas.factory_setting();
 }
 
 void loop()

@@ -112,7 +112,6 @@ const unsigned long kb = 1024;
 // hex bootloader data
 #include "bootloader_atmega168.h"
 
-
 // see Atmega328 datasheet page 298
 signatureType signatures [] =
 {
@@ -132,7 +131,7 @@ signatureType signatures [] =
     { { 0x1E, 0x92, 0x0A }, "ATmega48PA",   4 * kb,         0 },
     { { 0x1E, 0x93, 0x0F }, "ATmega88PA",   8 * kb,       256 },
     { { 0x1E, 0x94, 0x0B }, "ATmega168PA", 16 * kb,       256,
-        atmega168_optiboot,   // loader image
+        atmega168_optiboot,     // loader image
         //0x3E00,               // start address
         0x0,
         sizeof atmega168_optiboot,
