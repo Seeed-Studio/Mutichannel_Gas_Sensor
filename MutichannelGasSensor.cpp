@@ -42,6 +42,7 @@
 void MutichannelGasSensor::begin(int address)
 {
     __version = 1;          // version 1/2
+    r0_inited = false;
 
     Wire.begin();
     i2cAddress = address;
@@ -302,6 +303,12 @@ float MutichannelGasSensor::calcGas(int gas)
     float ratio0, ratio1, ratio2;
     if(1 == __version)
     {
+        if(!r0_inited)
+        {
+            if(readR0() >= 0) r0_inited = true;
+            else return -1.0f;
+        }
+        
         if(readR() < 0)
             return -2.0f;
 

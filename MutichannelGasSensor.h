@@ -85,6 +85,8 @@ public:
     uint8_t i2cAddress;     //I2C address of this MCU
     uint16_t res0[3];       //sensors res0
     uint16_t res[3];        //sensors res
+    bool r0_inited;
+
 
     inline unsigned int get_addr_dta(unsigned char addr_reg);
     inline unsigned int get_addr_dta(unsigned char addr_reg, unsigned char __dta);
