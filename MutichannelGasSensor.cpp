@@ -453,9 +453,13 @@ void MutichannelGasSensor::doCalibrate(void)
             int cnt = 0;
             for(i=0; i<20; i++)
             {
-                if((a0 - get_addr_dta(CH_VALUE_NH3)) > 2 || (get_addr_dta(CH_VALUE_NH3) - a0) > 2)cnt++;
-                if((a1 - get_addr_dta(CH_VALUE_CO)) > 2 || (get_addr_dta(CH_VALUE_CO) - a1) > 2)cnt++;
-                if((a2 - get_addr_dta(CH_VALUE_NO2)) > 2 || (get_addr_dta(CH_VALUE_NO2) - a2) > 2)cnt++;
+                unsigned int b0, b1, b2;
+                b0 = get_addr_dta(CH_VALUE_NH3);
+                b1 = get_addr_dta(CH_VALUE_CO);
+                b2 = get_addr_dta(CH_VALUE_NO2);
+                if(((a0 > b0) && (a0 - b0) > 2) || ((b0 > a0) && (b0 - a0) > 2)) cnt++;
+                if(((a1 > b1) && (a1 - b1) > 2) || ((b1 > a1) && (b1 - a1) > 2)) cnt++;
+                if(((a2 > b2) && (a2 - b2) > 2) || ((b2 > a2) && (b2 - a2) > 2)) cnt++;
                 
                 if(cnt>5)
                 {
