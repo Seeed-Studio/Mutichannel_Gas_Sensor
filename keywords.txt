@@ -1,0 +1,47 @@
+  
+#######################################
+# Syntax Coloring Map For 
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+get_addr_dta	KEYWORD2
+get_addr_dta	KEYWORD2
+write_i2c	KEYWORD2
+sendI2C	KEYWORD2
+readData	KEYWORD2
+readR0	KEYWORD2
+readR	KEYWORD2
+calcGas	KEYWORD2
+begin	KEYWORD2
+changeI2cAddr	KEYWORD2
+powerOn	KEYWORD2
+powerOff	KEYWORD2
+doCalibrate	KEYWORD2
+measure_CO	KEYWORD2
+measure_NO2	KEYWORD2
+measure_NH3	KEYWORD2
+measure_C3H8	KEYWORD2
+measure_C4H10	KEYWORD2
+measure_CH4	KEYWORD2
+measure_H2	KEYWORD2
+measure_C2H5OH	KEYWORD2
+getR0	KEYWORD2
+getRs	KEYWORD2
+ledOn	KEYWORD2
+ledOff	KEYWORD2
+display_eeprom	KEYWORD2
+factory_setting	KEYWORD2
+change_i2c_address	KEYWORD2
+getVersion	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
