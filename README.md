@@ -1,6 +1,9 @@
 # Mutichannel_Gas_Sensor
 This Arduino library is used for driving "Xadow - Mutichannel Gas Sensor" and "Grove - Mutichanel Gas Sensor"
 
+<img src=https://statics3.seeedstudio.com/images/product/101020088%201.jpg width=400><img src=https://statics3.seeedstudio.com/product/101020088%201_01.jpg width=400>
+
+[Grove - Multichannel Gas Sensor](https://www.seeedstudio.com/s/Grove-Multichannel-Gas-Sensor-p-2502.html)
 
 ## Usage:
 
@@ -26,7 +29,7 @@ mutichannelGasSensor.measure_H2();
 
 mutichannelGasSensor.measure_C2H5OH();
 
-For details please move to [wiki page](http://www.seeedstudio.com/wiki/Grove_-_Multichannel_Gas_Sensor).
+For details please move to [wiki page](http://wiki.seeedstudio.com/Grove-Multichannel_Gas_Sensor/).
  
  
  
