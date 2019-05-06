@@ -36,6 +36,17 @@
 #ifndef __MUTICHANNELGASSENSOR_H__
 #define __MUTICHANNELGASSENSOR_H__
 
+#if defined (ARDUINO_ARCH_SAMD)
+	#define _SERIAL Serial
+#elif defined (ARDUINO_ARCH_AVR)
+	#define _SERIAL Serial
+#elif defined(ARDUINO_ARCH_SEEED_STM32F4)
+	#define _SERIAL SerialUSB
+#else
+	#error "Architecture not matched"
+#endif
+
+
 #define DEFAULT_I2C_ADDR    0x04
 
 #define ADDR_IS_SET             0           // if this is the first time to run, if 1126, set 
@@ -87,7 +98,7 @@ public:
     uint16_t res[3];        //sensors res
     bool r0_inited;
 
-
+    MutichannelGasSensor();
     inline unsigned int get_addr_dta(unsigned char addr_reg);
     inline unsigned int get_addr_dta(unsigned char addr_reg, unsigned char __dta);
     inline void write_i2c(unsigned char addr, unsigned char *dta, unsigned char dta_len);

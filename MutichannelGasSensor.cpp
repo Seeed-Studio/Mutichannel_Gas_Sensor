@@ -30,11 +30,15 @@
     THE SOFTWARE.
 */
 
+#include <Arduino.h>
 #include <math.h>
 #include <Wire.h>
-#include <Arduino.h>
 #include "MutichannelGasSensor.h"
 
+MutichannelGasSensor::MutichannelGasSensor() : __version(2), i2cAddress(0x19)
+{
+
+}
 /*********************************************************************************************************
 ** Function name:           begin
 ** Descriptions:            initialize I2C
@@ -54,12 +58,12 @@ unsigned char MutichannelGasSensor::getVersion()
     if(get_addr_dta(CMD_READ_EEPROM, ADDR_IS_SET) == 1126)        // get version 
     {
         __version = 2;
-        Serial.println("version = 2");
+        _SERIAL.println("version = 2");
         return 2;
     }
     
     __version = 1;
-    Serial.println("version = 1");
+    _SERIAL.println("version = 1");
     return 1;
 }
 
@@ -86,6 +90,7 @@ START:
     Wire.beginTransmission(i2cAddress);
     Wire.write(addr_reg);
     Wire.endTransmission();    // stop transmitting
+    delay(2);
     
     Wire.requestFrom(i2cAddress, 2);
     
@@ -159,7 +164,8 @@ START:
     Wire.write(addr_reg);
     Wire.write(__dta);
     Wire.endTransmission();    // stop transmitting
-    
+    delay(2);
+
     Wire.requestFrom(i2cAddress, 2);
     
     unsigned int dta = 0;
@@ -416,20 +422,20 @@ void MutichannelGasSensor::doCalibrate(void)
         {
             for(int i=0; i<3; i++)
             {
-                Serial.print(res0[i]);
-                Serial.print('\t');
+                _SERIAL.print(res0[i]);
+                _SERIAL.print('\t');
             }
         }
         else
         {
             delay(5000);
-            Serial.println("continue...");
+            _SERIAL.println("continue...");
             for(int i=0; i<3; i++)
             {
-                Serial.print(res0[i]);
-                Serial.print('\t');
+                _SERIAL.print(res0[i]);
+                _SERIAL.print('\t');
             }
-            Serial.println();
+            _SERIAL.println();
             goto START;
         }
     }
@@ -442,12 +448,12 @@ void MutichannelGasSensor::doCalibrate(void)
             a1 = get_addr_dta(CH_VALUE_CO);
             a2 = get_addr_dta(CH_VALUE_NO2);
             
-            Serial.print(a0);
-            Serial.print('\t');
-            Serial.print(a1);
-            Serial.print('\t');
-            Serial.print(a2);
-            Serial.println('\t');
+            _SERIAL.print(a0);
+            _SERIAL.print('\t');
+            _SERIAL.print(a1);
+            _SERIAL.print('\t');
+            _SERIAL.print(a2);
+            _SERIAL.println('\t');
             ledOn();
             
             int cnt = 0;
@@ -469,10 +475,10 @@ void MutichannelGasSensor::doCalibrate(void)
             delay(200);
         }
         
-        Serial.print("write user adc value: ");
-        Serial.print(a0);Serial.print('\t');
-        Serial.print(a1);Serial.print('\t');
-        Serial.print(a2);Serial.println('\t');
+        _SERIAL.print("write user adc value: ");
+        _SERIAL.print(a0);_SERIAL.print('\t');
+        _SERIAL.print(a1);_SERIAL.print('\t');
+        _SERIAL.print(a2);_SERIAL.println('\t');
         
         unsigned char tmp[7];
     
@@ -527,25 +533,25 @@ void MutichannelGasSensor::display_eeprom()
 {
     if(__version == 1)
     {
-        Serial.println("ERROR: display_eeprom() is NOT support by V1 firmware.");
+        _SERIAL.println("ERROR: display_eeprom() is NOT support by V1 firmware.");
         return ;
     }
     
-    Serial.print("ADDR_IS_SET = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_IS_SET));
-    Serial.print("ADDR_FACTORY_ADC_NH3 = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_FACTORY_ADC_NH3));
-    Serial.print("ADDR_FACTORY_ADC_CO = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_FACTORY_ADC_CO));
-    Serial.print("ADDR_FACTORY_ADC_NO2 = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_FACTORY_ADC_NO2));
-    Serial.print("ADDR_USER_ADC_HN3 = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_HN3));
-    Serial.print("ADDR_USER_ADC_CO = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_CO));
-    Serial.print("ADDR_USER_ADC_NO2 = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_NO2));
-    Serial.print("ADDR_I2C_ADDRESS = "); Serial.println(get_addr_dta(CMD_READ_EEPROM, ADDR_I2C_ADDRESS));
+    _SERIAL.print("ADDR_IS_SET = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_IS_SET));
+    _SERIAL.print("ADDR_FACTORY_ADC_NH3 = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_FACTORY_ADC_NH3));
+    _SERIAL.print("ADDR_FACTORY_ADC_CO = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_FACTORY_ADC_CO));
+    _SERIAL.print("ADDR_FACTORY_ADC_NO2 = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_FACTORY_ADC_NO2));
+    _SERIAL.print("ADDR_USER_ADC_HN3 = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_HN3));
+    _SERIAL.print("ADDR_USER_ADC_CO = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_CO));
+    _SERIAL.print("ADDR_USER_ADC_NO2 = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_NO2));
+    _SERIAL.print("ADDR_I2C_ADDRESS = "); _SERIAL.println(get_addr_dta(CMD_READ_EEPROM, ADDR_I2C_ADDRESS));
 }
 
 float MutichannelGasSensor::getR0(unsigned char ch)         // 0:CH3, 1:CO, 2:NO2
 {
     if(__version == 1)
     {
-        Serial.println("ERROR: getR0() is NOT support by V1 firmware.");
+        _SERIAL.println("ERROR: getR0() is NOT support by V1 firmware.");
         return -1;
     }
     
@@ -554,20 +560,20 @@ float MutichannelGasSensor::getR0(unsigned char ch)         // 0:CH3, 1:CO, 2:NO
     {
         case 0:         // CH3
         a = get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_HN3);
-        Serial.print("a_ch3 = ");
-        Serial.println(a);
+        _SERIAL.print("a_ch3 = ");
+        _SERIAL.println(a);
         break;
         
         case 1:         // CO
         a = get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_CO);
-        Serial.print("a_co = ");
-        Serial.println(a);
+        _SERIAL.print("a_co = ");
+        _SERIAL.println(a);
         break;
         
         case 2:         // NO2
         a = get_addr_dta(CMD_READ_EEPROM, ADDR_USER_ADC_NO2);
-        Serial.print("a_no2 = ");
-        Serial.println(a);
+        _SERIAL.print("a_no2 = ");
+        _SERIAL.println(a);
         break;
         
         default:;
@@ -582,7 +588,7 @@ float MutichannelGasSensor::getRs(unsigned char ch)         // 0:CH3, 1:CO, 2:NO
     
     if(__version == 1)
     {
-        Serial.println("ERROR: getRs() is NOT support by V1 firmware.");
+        _SERIAL.println("ERROR: getRs() is NOT support by V1 firmware.");
         return -1;
     }
     
@@ -630,9 +636,9 @@ void MutichannelGasSensor::factory_setting()
         {
             // change i2c to 0x04
             
-            Serial.print("I2C address is: 0x");
-            Serial.println(address, HEX);
-            Serial.println("Change I2C address to 0x04");
+            _SERIAL.print("I2C address is: 0x");
+            _SERIAL.println(address, HEX);
+            _SERIAL.println("Change I2C address to 0x04");
             
             dta_test[0] = CMD_CHANGE_I2C;
             dta_test[1] = 0x04;
@@ -669,10 +675,10 @@ void MutichannelGasSensor::change_i2c_address(unsigned char addr)
     write_i2c(i2cAddress, dta_test, 2);
     
     
-    Serial.print("FUNCTION: CHANGE I2C ADDRESS: 0X");
-    Serial.print(i2cAddress, HEX);
-    Serial.print(" > 0x");
-    Serial.println(addr, HEX);
+    _SERIAL.print("FUNCTION: CHANGE I2C ADDRESS: 0X");
+    _SERIAL.print(i2cAddress, HEX);
+    _SERIAL.print(" > 0x");
+    _SERIAL.println(addr, HEX);
     
     i2cAddress = addr;
 }
