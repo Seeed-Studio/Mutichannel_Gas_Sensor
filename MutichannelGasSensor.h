@@ -36,12 +36,14 @@
 #ifndef __MUTICHANNELGASSENSOR_H__
 #define __MUTICHANNELGASSENSOR_H__
 
-#if defined (ARDUINO_ARCH_SAMD)
+#if defined (ARDUINO_SAMD_ZERO)
+	#define _SERIAL SerialUSB
+#elif defined(ARDUINO_ARCH_SEEED_STM32F4)
+	#define _SERIAL SerialUSB
+#elif defined (ARDUINO_ARCH_SAMD)
 	#define _SERIAL Serial
 #elif defined (ARDUINO_ARCH_AVR)
 	#define _SERIAL Serial
-#elif defined(ARDUINO_ARCH_SEEED_STM32F4)
-	#define _SERIAL SerialUSB
 #else
 	#error "Architecture not matched"
 #endif
