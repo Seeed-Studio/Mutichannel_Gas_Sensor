@@ -104,54 +104,55 @@ START:
         raw[cnt++] = Wire.read();
     }
     
-    if(cnt == 0)goto START;
-
-    dta = raw[0];
-    dta <<= 8;
-    dta += raw[1];
-    
-    switch(addr_reg)
+    if(cnt > 0)
     {
-        case CH_VALUE_NH3:
+        dta = raw[0];
+        dta <<= 8;
+        dta += raw[1];
         
-        if(dta > 0)
+        switch(addr_reg)
         {
-            adcValueR0_NH3_Buf = dta;
+            case CH_VALUE_NH3:
+            
+            if(dta > 0)
+            {
+                adcValueR0_NH3_Buf = dta;
+            }
+            else 
+            {
+                dta = adcValueR0_NH3_Buf;
+            }
+            
+            break;
+            
+            case CH_VALUE_CO:
+            
+            if(dta > 0)
+            {
+                adcValueR0_CO_Buf = dta;
+            }
+            else 
+            {
+                dta = adcValueR0_CO_Buf;
+            }
+            
+            break;
+            
+            case CH_VALUE_NO2:
+            
+            if(dta > 0)
+            {
+                adcValueR0_NO2_Buf = dta;
+            }
+            else 
+            {
+                dta = adcValueR0_NO2_Buf;
+            }
+            
+            break;
+            
+            default:;
         }
-        else 
-        {
-            dta = adcValueR0_NH3_Buf;
-        }
-        
-        break;
-        
-        case CH_VALUE_CO:
-        
-        if(dta > 0)
-        {
-            adcValueR0_CO_Buf = dta;
-        }
-        else 
-        {
-            dta = adcValueR0_CO_Buf;
-        }
-        
-        break;
-        
-        case CH_VALUE_NO2:
-        
-        if(dta > 0)
-        {
-            adcValueR0_NO2_Buf = dta;
-        }
-        else 
-        {
-            dta = adcValueR0_NO2_Buf;
-        }
-        
-        break;
-        
-        default:;
     }
     return dta;
 }
@@ -178,12 +179,12 @@ START:
         raw[cnt++] = Wire.read();
     }
     
-    if(cnt == 0)goto START;
-
-    dta = raw[0];
-    dta <<= 8;
-    dta += raw[1];
-    
+    if(cnt > 0)
+    {
+        dta = raw[0];
+        dta <<= 8;
+        dta += raw[1];
+    }
 
     return dta;
 }
