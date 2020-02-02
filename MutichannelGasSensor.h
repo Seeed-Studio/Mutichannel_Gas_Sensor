@@ -6,7 +6,7 @@
     2015-3-17
     http://www.seeed.cc/
     modi by Jack, 2015-8
-    
+
     V2 by Loovee
     2016-11-11
 
@@ -37,15 +37,15 @@
 #define __MUTICHANNELGASSENSOR_H__
 
 #if defined (ARDUINO_SAMD_ZERO)
-	#define _SERIAL SerialUSB
+    #define _SERIAL SerialUSB
 #elif defined(ARDUINO_ARCH_SEEED_STM32F4)
-	#define _SERIAL SerialUSB
+    #define _SERIAL SerialUSB
 #elif defined (ARDUINO_ARCH_SAMD)
-	#define _SERIAL Serial
+    #define _SERIAL Serial
 #elif defined (ARDUINO_ARCH_AVR)
-	#define _SERIAL Serial
+    #define _SERIAL Serial
 #else
-	#error "Architecture not matched"
+    #error "Architecture not matched"
 #endif
 
 
@@ -79,21 +79,21 @@
 #define CMD_CONTROL_LED         10
 #define CMD_CONTROL_PWR         11
 
-enum{CO, NO2, NH3, C3H8, C4H10, CH4, H2, C2H5OH};
+enum {CO, NO2, NH3, C3H8, C4H10, CH4, H2, C2H5OH};
 
-class MutichannelGasSensor{
+class MutichannelGasSensor {
 
-private:
+  private:
 
     int __version;
     unsigned char dta_test[20];
-    
+
     unsigned int readChAdcValue(int ch);
     unsigned int adcValueR0_NH3_Buf;
     unsigned int adcValueR0_CO_Buf;
     unsigned int adcValueR0_NO2_Buf;
-    
-public:
+
+  public:
 
     uint8_t i2cAddress;     //I2C address of this MCU
     uint16_t res0[3];       //sensors res0
@@ -103,15 +103,15 @@ public:
     MutichannelGasSensor();
     inline unsigned int get_addr_dta(unsigned char addr_reg);
     inline unsigned int get_addr_dta(unsigned char addr_reg, unsigned char __dta);
-    inline void write_i2c(unsigned char addr, unsigned char *dta, unsigned char dta_len);
+    inline void write_i2c(unsigned char addr, unsigned char* dta, unsigned char dta_len);
 
     void sendI2C(unsigned char dta);
     int16_t readData(uint8_t cmd);
     int16_t readR0(void);
     int16_t readR(void);
     float calcGas(int gas);
-    
-public:
+
+  public:
 
     void begin(int address);
     void begin();
@@ -119,36 +119,50 @@ public:
     void powerOn(void);
     void powerOff(void);
     void doCalibrate(void);
-    
+
     //get gas concentration, unit: ppm
-    float measure_CO(){return calcGas(CO);}
-    float measure_NO2(){return calcGas(NO2);}
-    float measure_NH3(){return calcGas(NH3);}
-    float measure_C3H8(){return calcGas(C3H8);}
-    float measure_C4H10(){return calcGas(C4H10);}
-    float measure_CH4(){return calcGas(CH4);}
-    float measure_H2(){return calcGas(H2);}
-    float measure_C2H5OH(){return calcGas(C2H5OH);}
-    
+    float measure_CO() {
+        return calcGas(CO);
+    }
+    float measure_NO2() {
+        return calcGas(NO2);
+    }
+    float measure_NH3() {
+        return calcGas(NH3);
+    }
+    float measure_C3H8() {
+        return calcGas(C3H8);
+    }
+    float measure_C4H10() {
+        return calcGas(C4H10);
+    }
+    float measure_CH4() {
+        return calcGas(CH4);
+    }
+    float measure_H2() {
+        return calcGas(H2);
+    }
+    float measure_C2H5OH() {
+        return calcGas(C2H5OH);
+    }
+
     float getR0(unsigned char ch);      // 0:CH3, 1:CO, 2:NO2
     float getRs(unsigned char ch);      // 0:CH3, 1:CO, 2:NO2
 
-public:
+  public:
 
-    void ledOn()
-    {
+    void ledOn() {
         dta_test[0] = CMD_CONTROL_LED;
         dta_test[1] = 1;
         write_i2c(i2cAddress, dta_test, 2);
     }
-    
-    void ledOff()
-    {
+
+    void ledOff() {
         dta_test[0] = CMD_CONTROL_LED;
         dta_test[1] = 0;
         write_i2c(i2cAddress, dta_test, 2);
     }
-    
+
     void display_eeprom();
     void factory_setting();
     void change_i2c_address(unsigned char addr);
@@ -160,5 +174,5 @@ extern MutichannelGasSensor gas;
 #endif
 
 /*********************************************************************************************************
-  END FILE
+    END FILE
 *********************************************************************************************************/

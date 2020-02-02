@@ -4,17 +4,15 @@
 
 #define SENSOR_ADDR     0X04        // default to 0x04
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
     gas.begin(SENSOR_ADDR);
-    
+
     unsigned char version = gas.getVersion();
     Serial.print("Version = ");
-    Serial.println(version);    
+    Serial.println(version);
 }
 
-void loop()
-{
+void loop() {
     // nothing to do
 }

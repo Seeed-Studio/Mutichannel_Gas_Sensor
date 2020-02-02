@@ -8,28 +8,25 @@
 #define SENSOR_ADDR     0X04        // default to 0x04
 #define PRE_HEAT_TIME   0           // pre-heat time, 10-30 minutes is recommended
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
-    gas.begin(SENSOR_ADDR);   // 
+    gas.begin(SENSOR_ADDR);   //
     Serial.println("power on, and pre-heat");
-    
-    for(int i=60*PRE_HEAT_TIME; i>=0; i--)
-    {
-        Serial.print(i/60);
+
+    for (int i = 60 * PRE_HEAT_TIME; i >= 0; i--) {
+        Serial.print(i / 60);
         Serial.print(":");
-        Serial.println(i%60);
+        Serial.println(i % 60);
         delay(1000);
     }
-    
+
     Serial.println("Begin to calibrate...");
     gas.doCalibrate();
     Serial.println("Calibration ok");
-    
+
     gas.display_eeprom();
 }
 
-void loop()
-{
-    
+void loop() {
+
 }
