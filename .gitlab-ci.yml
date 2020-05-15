@@ -4,5 +4,5 @@ build:
   script:
     - wget -c https://files.seeedstudio.com/arduino/seeed-arduino-ci.sh
     - chmod +x seeed-arduino-ci.sh
-    - bash $PWD/seeed-arduino-ci.sh test
+    - bash $PWD/seeed-arduino-ci.sh new_firmware:uno/new_firmware:servo:seeed_XIAO_m0/UpdateFrimware:uno/UpdateFrimware:servo:seeed_XIAO_m0/ReadSensorValue_Xadow:uno/ReadSensorValue_Xadow:servo:seeed_XIAO_m0
 
