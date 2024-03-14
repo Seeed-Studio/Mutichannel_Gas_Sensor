@@ -27,7 +27,7 @@ void loop() {
 
     ratio_NH3 = Rs_NH3 / R0_NH3;
     ratio_CO  = Rs_CO / R0_CO;
-    ratio_NO2 = Rs_NH3 / R0_NO2;
+    ratio_NO2 = Rs_NO2 / R0_NO2;
 
     Serial.println("R0:");
     Serial.print(R0_NH3);
